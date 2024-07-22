@@ -1,18 +1,19 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+import { SOLANA_TESTNET_URL } from "../../const";
 import './BalanceCard.css';
 
-const connection = new Connection("https://api.testnet.solana.com", "confirmed");
+const connection = new Connection(SOLANA_TESTNET_URL, "confirmed");
 
 export const BalanceCard: FC = () => {
-    const { publicKey, connect, connected } = useWallet();
-    const [balance, setBalance] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const { publicKey, connected } = useWallet();
+    const [balance, setBalance] = useState<number | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const fetchBalance = useCallback(async () => {
         if (!publicKey) {
-            console.log("No public key")
+            console.log("No public key");
             return;
         }
         setLoading(true);
@@ -41,10 +42,9 @@ export const BalanceCard: FC = () => {
             </div>
             <div className="balance">
                 {connected ? (
-                    <h2>{loading ? "Loading..." : `${balance} SOL`}</h2>
+                    <h2>{loading ? "Loading..." : `${balance ?? 0} SOL`}</h2>
                 ) : (
                     <p>Please Connect Wallet</p>
-
                 )}
                 {connected && (
                     <button className="refresh-button" onClick={fetchBalance}>
@@ -54,4 +54,4 @@ export const BalanceCard: FC = () => {
             </div>
         </div>
     );
-}
+};

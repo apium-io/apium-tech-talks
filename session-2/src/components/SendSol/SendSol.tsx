@@ -1,15 +1,16 @@
 import { FC, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { SOLANA_TESTNET_URL }  from "../../const";
 import './SendSol.css';
 
-const connection = new Connection("https://api.testnet.solana.com", "confirmed");
+const connection = new Connection(SOLANA_TESTNET_URL, "confirmed");
 
 export const SendSol: FC = () => {
     const { publicKey, sendTransaction, connected } = useWallet();
-    const [recipientAddress, setRecipientAddress] = useState("");
-    const [amount, setAmount] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [recipientAddress, setRecipientAddress] = useState<string>('');
+    const [amount, setAmount] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSendTransaction = useCallback(async () => {
         if (!publicKey || !recipientAddress || !amount) return;
@@ -30,8 +31,8 @@ export const SendSol: FC = () => {
             await connection.confirmTransaction(signature, 'confirmed');
             alert(`Transaction successful! Signature: ${signature}`);
         } catch (error) {
-            console.error("Error sending transaction:", error);
-            alert("Transaction failed!");
+            console.error('Error sending transaction:', error);
+            alert('Transaction failed!');
         }
 
         setLoading(false);
@@ -60,7 +61,7 @@ export const SendSol: FC = () => {
                     onChange={(e) => setAmount(e.target.value)}
                 />
                 <button className="send-button" onClick={handleSendTransaction} disabled={loading || !connected}>
-                    {loading ? "Transferring..." : "Transfer"}
+                    {loading ? 'Transferring...' : 'Transfer'}
                 </button>
             </div>
         </div>
