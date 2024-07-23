@@ -10,6 +10,7 @@ export const BalanceCard: FC = () => {
     const { publicKey, connected } = useWallet();
     const [balance, setBalance] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchBalance = useCallback(async () => {
         if (!publicKey) {
@@ -17,14 +18,16 @@ export const BalanceCard: FC = () => {
             return;
         }
         setLoading(true);
+        setError(null);
         try {
             const balanceInLamports = await connection.getBalance(publicKey);
             const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
             console.log("Public Key:", publicKey.toBase58());
             console.log("Balance in SOL:", balanceInSOL);
             setBalance(balanceInSOL);
-        } catch (error) {
-            console.error("Error fetching balance:", error);
+        } catch (err) {
+            console.error("Error fetching balance:", err);
+            setError("Failed to fetch balance");
         }
         setLoading(false);
     }, [publicKey]);
@@ -48,7 +51,7 @@ export const BalanceCard: FC = () => {
                 )}
                 {connected && (
                     <button className="refresh-button" onClick={fetchBalance}>
-                        <img src="refresh.png" alt="refresh" />
+                        <img src="refresh.png" alt="refresh"/>
                     </button>
                 )}
             </div>

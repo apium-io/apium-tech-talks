@@ -1,7 +1,7 @@
 import { FC, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { SOLANA_TESTNET_URL }  from "../../const";
+import { SOLANA_TESTNET_URL } from "../../const";
 import './SendSol.css';
 
 const connection = new Connection(SOLANA_TESTNET_URL, "confirmed");
@@ -15,15 +15,22 @@ export const SendSol: FC = () => {
     const handleSendTransaction = useCallback(async () => {
         if (!publicKey || !recipientAddress || !amount) return;
 
+        const recipientPublicKey = new PublicKey(recipientAddress);
+        const lamports = Math.round(parseFloat(amount) * LAMPORTS_PER_SOL);
+
+        if (isNaN(lamports) || lamports <= 0) {
+            alert('Invalid amount');
+            return;
+        }
+
         setLoading(true);
 
         try {
-            const recipientPublicKey = new PublicKey(recipientAddress);
             const transaction = new Transaction().add(
                 SystemProgram.transfer({
                     fromPubkey: publicKey,
                     toPubkey: recipientPublicKey,
-                    lamports: Math.round(parseFloat(amount) * LAMPORTS_PER_SOL),
+                    lamports,
                 })
             );
 
@@ -33,9 +40,9 @@ export const SendSol: FC = () => {
         } catch (error) {
             console.error('Error sending transaction:', error);
             alert('Transaction failed!');
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     }, [publicKey, recipientAddress, amount, sendTransaction]);
 
     return (
@@ -44,16 +51,18 @@ export const SendSol: FC = () => {
                 <h2>Quick Transfer</h2>
             </div>
             <div className="send-form">
-                <label htmlFor="" className="label">Wallet Address</label>
+                <label htmlFor="recipient" className="label">Wallet Address</label>
                 <input
+                    id="recipient"
                     type="text"
                     placeholder="Recipient Address"
                     className="wallet-input"
                     value={recipientAddress}
                     onChange={(e) => setRecipientAddress(e.target.value)}
                 />
-                <label htmlFor="" className="label">Amount</label>
+                <label htmlFor="amount" className="label">Amount</label>
                 <input
+                    id="amount"
                     type="number"
                     placeholder="Amount"
                     className="amt-input"

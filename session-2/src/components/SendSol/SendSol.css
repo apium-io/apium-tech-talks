@@ -1,16 +1,13 @@
 .send-sol {
     padding: 20px;
-    /*border: 1px solid #494949;*/
     border-radius: 5px;
     width: 385px;
     height: 300px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /*background-color: #333;*/
     background-color: #ffffff;
     text-align: center;
     display: flex;
     flex-direction: column;
-    /*justify-content: center;*/
 }
 
 .send-sol .title h2 {
@@ -44,7 +41,6 @@
 }
 
 .send-sol .send-form input:focus {
-    /*border-color: #c40d83;*/
     outline: none;
     box-shadow: 0 0 4px rgb(48, 65, 124);
 }
@@ -52,7 +48,6 @@
 .send-sol .send-button {
     padding: 10px;
     height: 58px;
-    /*background: linear-gradient(25deg, #c40d83, #4f075d);*/
     background-color: #2a50d7;
     color: white;
     border: none;

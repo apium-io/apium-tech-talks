@@ -1,7 +1,8 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import {ConfirmedSignatureInfo, Connection, PublicKey} from '@solana/web3.js';
-import { SOLANA_TESTNET_URL, SOLANA_DEVNET_URL }  from "../../const";
+import { ConfirmedSignatureInfo, Connection, PublicKey } from '@solana/web3.js';
+import { SOLANA_TESTNET_URL, SOLANA_DEVNET_URL } from "../../const";
+// @ts-ignore
 import * as timeago from 'timeago.js';
 import './History.css';
 
@@ -21,7 +22,7 @@ interface Transaction {
 export const History: FC = () => {
     const { publicKey, connected } = useWallet();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const fetchTransactionHistory = useCallback(async () => {
         if (!publicKey) return;
