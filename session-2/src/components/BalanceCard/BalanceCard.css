@@ -35,3 +35,35 @@
     margin: 0;
     padding: 5px;
 }
+
+
+@media (max-width: 768px) {
+    .BalanceCard {
+        padding: 10px;
+    }
+
+    .BalanceCard .title {
+        font-size: 14px;
+    }
+
+    .BalanceCard .balance {
+        gap: 5px;
+        align-items: flex-start;
+    }
+
+    .BalanceCard .refresh-button {
+        align-self: center;
+    }
+
+    .BalanceCard .refresh-button img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .BalanceCard h2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+}

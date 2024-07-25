@@ -1,13 +1,14 @@
 .send-sol {
     padding: 20px;
     border-radius: 5px;
-    width: 385px;
-    height: 300px;
+    width: 100%;
+    min-width: 385px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
     text-align: center;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 .send-sol .title h2 {
@@ -60,4 +61,20 @@
 .send-sol .send-button:hover {
     background-color: #000;
     opacity: 0.8;
+}
+
+@media (max-width: 760px) {
+    .send-sol {
+        min-width: 70px;
+        padding: 10px;
+    }
+
+    .send-sol .send-form input,
+    .send-sol .send-form label {
+        width: 94%;
+    }
+
+    .send-sol .send-button {
+        width: 100%;
+    }
 }

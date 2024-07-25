@@ -101,3 +101,30 @@
     text-align: center;
 }
 
+
+@media (max-width: 768px) {
+
+    .title {
+        align-items: center;
+    }
+
+    .title h2 {
+        font-size: 14px;
+    }
+
+    .transaction-table th, .transaction-table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .refresh-button img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .pointer-cursor .copy-icon {
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+    }
+}
