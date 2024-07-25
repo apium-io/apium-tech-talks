@@ -28,10 +28,10 @@ export const History: FC = () => {
         if (!publicKey) return;
         setLoading(true);
         try {
-            const confirmedSignatures = await connection.getConfirmedSignaturesForAddress2(publicKey, { limit: 10 });
+            const confirmedSignatures = await connection.getSignaturesForAddress(publicKey, { limit: 10 });
             const confirmedTransactions = await Promise.all(
                 confirmedSignatures.map(async (signatureInfo: ConfirmedSignatureInfo) => {
-                    const transaction = await connection.getConfirmedTransaction(signatureInfo.signature);
+                    const transaction = await connection.getTransaction(signatureInfo.signature);
                     return {
                         signature: signatureInfo.signature,
                         slot: transaction!.slot,
