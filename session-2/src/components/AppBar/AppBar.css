@@ -24,3 +24,21 @@
     transition: background-color 0.3s ease;
     margin-right: 50px;
 }
+
+
+@media (max-width: 768px) {
+    .app-bar img {
+        height: 20px;
+        width: 100px;
+    }
+
+    .app-bar .wallet-button {
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        margin-right: 50px;
+    }
+
+}

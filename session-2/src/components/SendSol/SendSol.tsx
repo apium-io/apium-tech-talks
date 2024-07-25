@@ -30,7 +30,7 @@ export const SendSol: FC = () => {
                 SystemProgram.transfer({
                     fromPubkey: publicKey,
                     toPubkey: recipientPublicKey,
-                    lamports,
+                    lamports: Math.round(parseFloat(amount) * LAMPORTS_PER_SOL),
                 })
             );
 
