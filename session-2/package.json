@@ -10,10 +10,6 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.103",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
     "browserify-zlib": "^0.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -48,6 +44,10 @@
     ]
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "assert": "^2.1.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",

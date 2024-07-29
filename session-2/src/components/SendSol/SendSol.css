@@ -46,6 +46,17 @@
     box-shadow: 0 0 4px rgb(48, 65, 124);
 }
 
+.send-sol .send-form input.error {
+    border-color: red;
+}
+
+.send-sol .send-form .error-message {
+    color: red;
+    font-size: 12px;
+    text-align: left;
+    margin-top: -10px;
+}
+
 .send-sol .send-button {
     padding: 10px;
     height: 58px;
