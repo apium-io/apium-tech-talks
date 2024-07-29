@@ -51,7 +51,7 @@ export const BalanceCard: FC = () => {
                 )}
                 {connected && (
                     <button className="refresh-button" onClick={fetchBalance}>
-                        <img src="refresh.png" alt="refresh"/>
+                        <img src="refresh.png" alt="refresh" />
                     </button>
                 )}
             </div>
