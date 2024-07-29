@@ -1,0 +1,69 @@
+.BalanceCard {
+    padding: 20px;
+    width: 100%;
+    height: auto;
+    text-align: left;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.BalanceCard .title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #000000;
+}
+
+.BalanceCard .balance {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.BalanceCard .refresh-button {
+    cursor: pointer;
+}
+
+.BalanceCard .refresh-button:hover {
+    transform: rotate(90deg);
+}
+
+.refresh-button img {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 5px;
+}
+
+
+@media (max-width: 768px) {
+    .BalanceCard {
+        padding: 10px;
+    }
+
+    .BalanceCard .title {
+        font-size: 14px;
+    }
+
+    .BalanceCard .balance {
+        gap: 5px;
+        align-items: flex-start;
+    }
+
+    .BalanceCard .refresh-button {
+        align-self: center;
+    }
+
+    .BalanceCard .refresh-button img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .BalanceCard h2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+}
