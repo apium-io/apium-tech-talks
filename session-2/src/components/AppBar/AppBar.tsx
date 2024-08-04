@@ -5,7 +5,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 export const AppBar: FC = () => {
     return (
         <div className="app-bar">
-            <img src="img.png" alt="solana logo"/>
+            <img src="solana_logo.png" alt="solana logo"/>
             <div className="wallet-button">
                 <WalletMultiButton
                     style={{

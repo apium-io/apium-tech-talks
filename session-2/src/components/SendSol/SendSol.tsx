@@ -11,32 +11,60 @@ export const SendSol: FC = () => {
     const [recipientAddress, setRecipientAddress] = useState<string>('');
     const [amount, setAmount] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [errors, setErrors] = useState<{ address?: string; amount?: string }>({});
+
+    const validateAddress = (address: string): boolean => {
+        try {
+            new PublicKey(address);
+            return true;
+        } catch {
+            return false;
+        }
+    };
 
     const handleSendTransaction = useCallback(async () => {
-        if (!publicKey || !recipientAddress || !amount) return;
+        const newErrors: { address?: string; amount?: string } = {};
 
-        const recipientPublicKey = new PublicKey(recipientAddress);
+        if (!recipientAddress || !validateAddress(recipientAddress)) {
+            newErrors.address = 'Invalid wallet address';
+        }
+
         const lamports = Math.round(parseFloat(amount) * LAMPORTS_PER_SOL);
 
-        if (isNaN(lamports) || lamports <= 0) {
-            alert('Invalid amount');
-            return;
+        if (!amount || isNaN(lamports) || lamports <= 0) {
+            newErrors.amount = 'Invalid amount';
         }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) return;
+
+        if (!publicKey) return;
+
+        const recipientPublicKey = new PublicKey(recipientAddress);
 
         setLoading(true);
 
         try {
+            const balance = await connection.getBalance(publicKey);
+            if (balance < lamports) {
+                setErrors({ amount: 'Insufficient balance' });
+                return;
+            }
+
             const transaction = new Transaction().add(
                 SystemProgram.transfer({
                     fromPubkey: publicKey,
                     toPubkey: recipientPublicKey,
-                    lamports: Math.round(parseFloat(amount) * LAMPORTS_PER_SOL),
+                    lamports: lamports,
                 })
             );
 
             const signature = await sendTransaction(transaction, connection);
             await connection.confirmTransaction(signature, 'confirmed');
             alert(`Transaction successful! Signature: ${signature}`);
+            setRecipientAddress('');
+            setAmount('');
         } catch (error) {
             console.error('Error sending transaction:', error);
             alert('Transaction failed!');
@@ -56,19 +84,21 @@ export const SendSol: FC = () => {
                     id="recipient"
                     type="text"
                     placeholder="Recipient Address"
-                    className="wallet-input"
+                    className={`wallet-input ${errors.address ? 'error' : ''}`}
                     value={recipientAddress}
                     onChange={(e) => setRecipientAddress(e.target.value)}
                 />
+                {errors.address && <span className="error-message">{errors.address}</span>}
                 <label htmlFor="amount" className="label">Amount</label>
                 <input
                     id="amount"
                     type="number"
                     placeholder="Amount"
-                    className="amt-input"
+                    className={`amt-input ${errors.amount ? 'error' : ''}`}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                 />
+                {errors.amount && <span className="error-message">{errors.amount}</span>}
                 <button className="send-button" onClick={handleSendTransaction} disabled={loading || !connected}>
                     {loading ? 'Transferring...' : 'Transfer'}
                 </button>
