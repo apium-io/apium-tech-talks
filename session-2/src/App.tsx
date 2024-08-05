@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import WalletContextProvider from "./components/WalletContextProvider";
 import {AppBar} from "./components/AppBar/AppBar";
