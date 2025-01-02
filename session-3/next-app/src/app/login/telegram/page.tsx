@@ -1,82 +1,177 @@
 "use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Web3Auth } from "@web3auth/modal";
-import { CHAIN_NAMESPACES, WALLET_ADAPTERS, IAdapter } from "@web3auth/base";
-import { SolanaPrivateKeyProvider } from "@web3auth/solana-provider";
-import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { ParticleNetwork } from "@particle-network/auth";
+import { SolanaWallet } from "@particle-network/solana-wallet";
+import { WalletEntryPosition } from "@particle-network/auth";
+import MiniGame from "../../components/MiniGame";
 
-export default function GoogleLogin({
-  searchParams,
-}: {
-  searchParams: { signature: string; message: string };
-}) {
-  const router = useRouter();
+interface PageProps {
+  searchParams: {
+    userId: string;
+    username?: string;
+  };
+}
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        openLink: (url: string) => void;
+        ready: () => void;
+        expand: () => void;
+      };
+    };
+  }
+}
+
+export default function TelegramMiniApp({ searchParams }: PageProps) {
+  const [particle, setParticle] = useState<ParticleNetwork | null>(null);
+  const [address, setAddress] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loginWithGoogle = async () => {
+    // Initialize Telegram Mini App
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+
+    const init = async () => {
       try {
-        const chainConfig = {
-          chainNamespace: CHAIN_NAMESPACES.SOLANA,
-          chainId: "0x2",
-          rpcTarget: "https://api.devnet.solana.com",
-          displayName: "Solana Devnet",
-          blockExplorerUrl: "https://explorer.solana.com/?cluster=devnet",
-          ticker: "SOL",
-          tickerName: "Solana",
-        };
+        if (!searchParams.userId) {
+          throw new Error("Missing user ID parameter");
+        }
 
-        const privateKeyProvider = new SolanaPrivateKeyProvider({
-          config: { chainConfig },
-        });
-
-        const web3auth = new Web3Auth({
-          clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID!,
-          web3AuthNetwork: "sapphire_devnet",
-          chainConfig,
-          privateKeyProvider,
-        });
-
-        const openloginAdapter = new OpenloginAdapter({
-          privateKeyProvider,
-          adapterSettings: {
-            network: "sapphire_devnet",
-            uxMode: "redirect",
-            loginConfig: {
-              google: {
-                name: "Google Login",
-                verifier: "telegram-cmg-verifier",
-                typeOfLogin: "google",
-                clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-              },
-            },
+        const particleInstance = new ParticleNetwork({
+          projectId: process.env.NEXT_PUBLIC_PARTICLE_PROJECT_ID!,
+          clientKey: process.env.NEXT_PUBLIC_PARTICLE_CLIENT_KEY!,
+          appId: process.env.NEXT_PUBLIC_PARTICLE_APP_ID!,
+          chainName: "solana",
+          chainId: 103,
+          wallet: {
+            displayWalletEntry: true,
+            defaultWalletEntryPosition: WalletEntryPosition.BR,
           },
-        }) as unknown as IAdapter<unknown>;
-
-        web3auth.configureAdapter(openloginAdapter);
-
-        await web3auth.initModal();
-
-        await web3auth.connectTo("openlogin", {
-          loginProvider: "google",
-          mfaLevel: "none",
         });
 
-        router.replace("/");
+        setParticle(particleInstance);
+
+        // Check if user is already logged in
+        const userInfo = particleInstance.auth.getUserInfo();
+        if (userInfo) {
+          const addr = await particleInstance.auth.getSolanaAddress();
+          if (addr) {
+            setAddress(addr);
+          }
+        }
       } catch (error) {
-        console.error("Web3Auth error:", error);
+        console.error("Initialization error:", error);
+        setError(
+          error instanceof Error ? error.message : "Unknown error occurred"
+        );
+      } finally {
+        setLoading(false);
       }
     };
 
-    loginWithGoogle();
-  }, [router, searchParams]);
+    init();
+  }, [searchParams.userId]);
+
+  const login = async () => {
+    if (!particle) {
+      console.log("Particle not initialized yet");
+      return;
+    }
+
+    try {
+      const userInfo = await particle.auth.login({
+        preferredAuthType: "email",
+        supportAuthTypes: "email",
+      });
+
+      if (userInfo) {
+        const solanaWallet = new SolanaWallet(particle.auth);
+        await solanaWallet.connect();
+        const addr = await particle.auth.getSolanaAddress();
+        if (addr) {
+          setAddress(addr);
+        }
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError(error instanceof Error ? error.message : "Login failed");
+    }
+  };
+
+  const logout = async () => {
+    if (!particle) return;
+
+    try {
+      await particle.auth.logout();
+      setAddress(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+      setError(error instanceof Error ? error.message : "Logout failed");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-4">
+        <Loader2 className="h-12 w-12 animate-spin text-white" />
+        <div>Initializing Particle Network...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-4 p-4 text-center">
+        <div className="text-red-500">Error: {error}</div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-screen h-screen flex flex-col gap-2 items-center justify-center">
-      <Loader2 className="h-12 w-12 animate-spin text-white" />
-      Connecting wallet...
-    </div>
+    <main className="h-screen w-full">
+      {!address ? (
+        <div className="flex items-center justify-center h-full">
+          <button
+            onClick={login}
+            className={`px-4 py-2 rounded-lg ${
+              particle
+                ? "bg-blue-500 text-white hover:bg-blue-600"
+                : "bg-gray-400 text-gray-700 cursor-not-allowed"
+            }`}
+            disabled={!particle}
+          >
+            Connect Wallet
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="p-4 flex justify-between items-center">
+            <p className="text-sm">
+              Connected: {address.slice(0, 6)}...{address.slice(-4)}
+            </p>
+            <button
+              onClick={logout}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            >
+              Disconnect
+            </button>
+          </div>
+          <MiniGame />
+        </>
+      )}
+    </main>
   );
 }

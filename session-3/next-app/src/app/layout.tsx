@@ -20,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          {children}
-        </Providers>
-        <Script src="https://telegram.org/js/telegram-web-app.js" />
+        <Providers>{children}</Providers>
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';"
+        ></meta>
       </body>
     </html>
   );
