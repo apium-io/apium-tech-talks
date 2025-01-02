@@ -24,7 +24,7 @@ export default function RootLayout({
         <script src="https://telegram.org/js/telegram-web-app.js"></script>
         <meta
           http-equiv="Content-Security-Policy"
-          content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';"
+          content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https: wss://api.devnet.solana.com;"
         ></meta>
       </body>
     </html>

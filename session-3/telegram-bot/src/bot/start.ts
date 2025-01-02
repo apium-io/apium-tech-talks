@@ -16,18 +16,32 @@ const adminAccount = privateKeyToAccount({
   }),
 });
 
+// feature.command("start", async (ctx) => {
+//   const username = ctx.from?.username;
+//   const userId = ctx.from?.id;
+
+//   const keyboard = new InlineKeyboard().webApp(
+//     "Create Wallet",
+//     `${process.env.FRONTEND_APP_ORIGIN}/login/telegram?userId=${userId}&username=${username}`
+//   );
+
+//   return ctx.reply("Click below to create your Solana wallet with Particle!", {
+//     reply_markup: keyboard,
+//   });
+// });
+
 feature.command("start", async (ctx) => {
   const username = ctx.from?.username;
   const userId = ctx.from?.id;
 
-  const keyboard = new InlineKeyboard().webApp(
-    "Create Wallet",
-    `${process.env.FRONTEND_APP_ORIGIN}/login/telegram?userId=${userId}&username=${username}`
-  );
+  const url = `${process.env.FRONTEND_APP_ORIGIN}/login/telegram?userId=${userId}&username=${username}`;
 
-  return ctx.reply("Click below to create your Solana wallet with Particle!", {
-    reply_markup: keyboard,
-  });
+  return ctx.reply(
+    `Click [here](${url}) to create your Solana wallet with Particle!`,
+    {
+      parse_mode: "Markdown",
+    }
+  );
 });
 
 export { composer as startFeature };
