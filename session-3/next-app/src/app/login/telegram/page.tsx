@@ -47,7 +47,7 @@
 //         }
 
 //         // Add a small delay before initialization to ensure proper loading
-//         await new Promise((resolve) => setTimeout(resolve, 500));
+//         await new Promise((resolve) => setTimeout(resolve, 1000));
 
 //         const particleInstance = new ParticleNetwork({
 //           projectId: process.env.NEXT_PUBLIC_PARTICLE_PROJECT_ID!,

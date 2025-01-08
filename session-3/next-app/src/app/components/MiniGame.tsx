@@ -76,14 +76,12 @@ const MiniGame: React.FC<MiniGameProps> = ({ userId, walletAddress }) => {
     const monsterType = monsterTypes.find(
       (m) => health >= m.minHealth && health <= m.maxHealth
     )!;
-    console.log("monsterType", monsterType);
     setMonster({
       health,
       maxHealth: health,
-      type: monsterType.type as Monster["type"],
+      type: monsterType.type as any,
       reward: monsterType.reward,
     });
-    console.log("monster", monsterType.image);
     setCurrentReward(monsterType.reward);
   };
 
