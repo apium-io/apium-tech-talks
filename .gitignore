@@ -23,6 +23,8 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
+*.env
+*.zip
 
 packages/react-devtools-core/dist
 packages/react-devtools-extensions/chrome/build
@@ -37,3 +39,5 @@ packages/react-devtools-fusebox/dist
 packages/react-devtools-inline/dist
 packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
+# Local Netlify folder
+.netlify
