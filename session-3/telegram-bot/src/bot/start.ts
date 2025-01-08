@@ -16,6 +16,26 @@ const adminAccount = privateKeyToAccount({
   }),
 });
 
+feature.command("start", async (ctx) => {
+  const username = ctx.from?.username;
+  const userId = ctx.from?.id;
+
+  const keyboard = new InlineKeyboard().webApp(
+    "Start Your Adventure", // Changed from "Create Wallet"
+    `${process.env.FRONTEND_APP_ORIGIN}/login/telegram?userId=${userId}&username=${username}`
+  );
+
+  return ctx.reply(
+    "🎮 Welcome to Monster Slayer! Embark on an epic adventure where you can:\n\n" +
+      "⚔️ Battle unique monsters\n" +
+      "💰 Earn rewards for your victories\n\n" +
+      "Click below to begin your journey!",
+    {
+      reply_markup: keyboard,
+    }
+  );
+});
+
 // feature.command("start", async (ctx) => {
 //   const username = ctx.from?.username;
 //   const userId = ctx.from?.id;
@@ -30,18 +50,18 @@ const adminAccount = privateKeyToAccount({
 //   });
 // });
 
-feature.command("start", async (ctx) => {
-  const username = ctx.from?.username;
-  const userId = ctx.from?.id;
+// feature.command("start", async (ctx) => {
+//   const username = ctx.from?.username;
+//   const userId = ctx.from?.id;
 
-  const url = `${process.env.FRONTEND_APP_ORIGIN}/login/telegram?userId=${userId}&username=${username}`;
+//   const url = `${process.env.FRONTEND_APP_ORIGIN}/login/telegram?userId=${userId}&username=${username}`;
 
-  return ctx.reply(
-    `Click [here](${url}) to create your Solana wallet with Particle!`,
-    {
-      parse_mode: "Markdown",
-    }
-  );
-});
+//   return ctx.reply(
+//     `Click [here](${url}) to create your Solana wallet with Particle!`,
+//     {
+//       parse_mode: "Markdown",
+//     }
+//   );
+// });
 
 export { composer as startFeature };

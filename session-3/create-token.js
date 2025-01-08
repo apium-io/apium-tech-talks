@@ -12,7 +12,6 @@ async function createGameToken() {
   // Generate a new keypair for the mint authority
   const mintAuthority = Keypair.generate();
 
-  console.log("Requesting airdrop for mint authority...");
   const airdropSignature = await connection.requestAirdrop(
     mintAuthority.publicKey,
     1000000000 // 1 SOL
@@ -20,7 +19,6 @@ async function createGameToken() {
   await connection.confirmTransaction(airdropSignature);
 
   // Create the token mint
-  console.log("Creating token mint...");
   const mint = await createMint(
     connection,
     mintAuthority,
@@ -38,11 +36,6 @@ async function createGameToken() {
       mintAddress: mint.toString(),
     })
   );
-
-  console.log("Token created successfully!");
-  console.log("Mint address:", mint.toString());
-  console.log("Mint authority address:", mintAuthority.publicKey.toString());
-  console.log("Private key saved to mint-authority.json");
 }
 
 createGameToken().catch(console.error);
